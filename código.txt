@@ -1,0 +1,101 @@
+// ==UserScript==
+// @name         Escola
+// @namespace    http://tampermonkey.net/
+// @version      2025-02-24
+// @description  try to take over the world!
+// @author       You
+// @match        *://*/*
+// @icon         none
+// @grant        none
+// ==/UserScript==
+
+//PARA TROCAR COR DO TÍTULO NETESCOLA NA PÁGINA DE LOGIN DO NETESCOLA A CADA CLIQUE
+(function () {
+    'use strict';
+
+    if (window.location.href.includes('https://portalnetescola.educacao.go.gov.br')) {
+        document.body.addEventListener('click', function () {
+            var h1 = document.querySelector('h1.style__Logo-sc-4gbwm3-2.gyPBkq');
+            if (h1) {
+                // Gerar uma cor aleatória
+                var newColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+                h1.style.color = newColor;
+
+                // Obter as coordenadas do elemento h1
+                var rect = h1.getBoundingClientRect();
+                var h1CenterX = rect.left + rect.width / 2;
+                var h1CenterY = rect.top + rect.height / 2;
+
+                // Criar as partículas no centro do h1
+                createParticles(h1CenterX, h1CenterY, newColor);
+            }
+        });
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 30; i++) {
+                let particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.top = y + 'px';
+                particle.style.left = x + 'px';
+                particle.style.width = '10px';
+                particle.style.height = '10px';
+                particle.style.backgroundColor = color;
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                document.body.appendChild(particle);
+
+                let angle = Math.random() * 2 * Math.PI;
+                let speed = Math.random() * 3 + 2;
+                let dist = Math.random() * 100 + 50;
+
+                let dx = Math.cos(angle) * dist;
+                let dy = Math.sin(angle) * dist;
+
+                particle.animate([
+                    { transform: `translate(0, 0)`, opacity: 1 },
+                    { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
+                ], {
+                    duration: 1000,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+
+                // Remover a partícula após a animação
+                setTimeout(function () {
+                    particle.remove();
+                }, 1000);
+            }
+        }
+    }
+})();
+
+//TROCAR IMAGEM DO CURSOR PARA NEYMAR
+(function () {
+    'use strict';
+    const ball = document.createElement('img');
+    ball.src = 'https://github.com/MikDesenvolvimento/Imagens/blob/main/neymar.png?raw=true';
+    ball.style.width = '50px';
+    ball.style.height = '50px';
+    ball.style.position = 'absolute';
+    ball.style.pointerEvents = 'none';
+    ball.style.zIndex = '9999';
+    document.body.appendChild(ball);
+
+    document.body.style.cursor = 'none';
+
+    document.addEventListener('mousemove', function (e) {
+        ball.style.left = `${e.pageX - 25}px`;
+        ball.style.top = `${e.pageY - 25}px`;
+    });
+})();
+
+//TROCAR O TÍTULO DA PÁGINA
+(function () {
+    'use strict';
+    if (window.location.hostname === 'portalnetescola.educacao.go.gov.br') {
+        const titles = ['Minecraft', 'Fortnite', 'Neymar', 'Escolinha'];
+        setInterval(function () {
+            document.title = titles[Math.floor(Math.random() * titles.length)];
+        }, 20000);
+    }
+})();
